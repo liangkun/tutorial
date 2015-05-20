@@ -22,5 +22,4 @@ lazy val libraries = Seq(
 )
 
 lazy val repositories = Seq(
-  "nexus" at "http://nexus.d.xiaomi.net/nexus/content/groups/public"
 )
