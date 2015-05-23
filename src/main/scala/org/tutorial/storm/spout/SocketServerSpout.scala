@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 XiaoMi Inc. All Rights Reserved.
+ * Copyright (c) 2015 Liang Kun. All Rights Reserved.
  * Authors: Liang Kun <liangkun@data-intelli.com>
  */
 package org.tutorial.storm.spout
@@ -7,6 +7,9 @@ package org.tutorial.storm.spout
 import java.net.InetSocketAddress
 import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.{Map => JMap}
+
+import scala.collection.mutable
+import scala.util.Random
 
 import akka.actor.{ActorSystem, Props, PoisonPill, ActorLogging, Actor}
 import akka.io.{Tcp, IO}
@@ -19,15 +22,18 @@ import backtype.storm.topology.base.BaseRichSpout
 import backtype.storm.tuple.{Values, Fields}
 import backtype.storm.utils.Utils
 import com.typesafe.config.{Config => AppConfig}
+import org.slf4j.LoggerFactory
 
 class SocketServerSpout(appConfig: AppConfig) extends BaseRichSpout {
   import SocketServerSpout._
 
+  val logger = LoggerFactory.getLogger(this.getClass)
   val host = appConfig.getString("org.tutorial.storm.spout.socket.host")
   val port = appConfig.getInt("org.tutorial.storm.spout.socket.port")
   private var actorSystem: ActorSystem = null
   private var queue: MessageQueue = null
   private var collector: SpoutOutputCollector = null
+  private val messages = mutable.HashMap[String, String]()
 
   /** @see ISpout */
   override def open(config: JMap[_, _], topologyContext: TopologyContext, collector: SpoutOutputCollector): Unit = {
@@ -43,7 +49,11 @@ class SocketServerSpout(appConfig: AppConfig) extends BaseRichSpout {
     if (document == null) {
       Utils.sleep(50)
     } else {
-      collector.emit(new Values(document))
+      val id = nextId()
+      collector.emit(new Values(document), id)
+      if (messages.put(id, document).nonEmpty) {
+        logger.warn("message id collision: " + id)
+      }
     }
   }
 
@@ -67,13 +77,23 @@ class SocketServerSpout(appConfig: AppConfig) extends BaseRichSpout {
 
   /** @see ISpout */
   override def ack(id: AnyRef): Unit = {
-
+    if (messages.remove(id.asInstanceOf[String]).isEmpty) {
+      logger.warn("acking unexists message id " + id)
+    }
   }
 
   /** @see ISpout */
   override def fail(id: AnyRef): Unit = {
-
+    val document = messages.remove(id.asInstanceOf[String])
+    if (document.isEmpty) {
+      logger.warn("fail unexists message id " + id)
+    } else {
+      queue.push(document.get)
+    }
   }
+
+  /** Generate next message id */
+  private def nextId(): String = Random.nextString(32)
 }
 
 object SocketServerSpout {

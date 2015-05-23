@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 XiaoMi Inc. All Rights Reserved.
+ * Copyright (c) 2015 Liang Kun. All Rights Reserved.
  * Authors: Liang Kun <liangkun@data-intelli.com>
  */
 
