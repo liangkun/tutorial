@@ -3,6 +3,7 @@ lazy val root = (project in file(".")).settings(
   organization := "org.tutorial",
   version := "1.0",
   scalaVersion := "2.11.6",
+  scalacOptions += "-Yresolve-term-conflict:package",
   libraryDependencies ++= libraries,
   resolvers ++= repositories,
   mainClass in assembly := Some("org.tutorial.storm.Main"),
