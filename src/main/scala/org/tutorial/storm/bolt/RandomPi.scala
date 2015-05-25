@@ -29,6 +29,6 @@ class RandomPi extends BaseBasicBolt {
 
   /** @see IComponent */
   override def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = {
-    declarer.declare(new Fields("id", "count", "hit"))
+    declarer.declare(new Fields("request-id", "count", "hit"))
   }
 }

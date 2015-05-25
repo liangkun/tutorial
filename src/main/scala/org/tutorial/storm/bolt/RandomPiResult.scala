@@ -37,6 +37,6 @@ class RandomPiResult extends BaseBatchBolt[AnyRef] {
 
   /** @see IComponent */
   override def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = {
-    declarer.declare(new Fields("id", "result"))
+    declarer.declare(new Fields("request-id", "result"))
   }
 }
