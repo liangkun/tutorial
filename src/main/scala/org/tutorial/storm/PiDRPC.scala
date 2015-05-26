@@ -53,7 +53,6 @@ object PiDRPC {
       }
     }
 
-    cluster.shutdown()
-    drpc.shutdown()
+    System.exit(0)
   }
 }

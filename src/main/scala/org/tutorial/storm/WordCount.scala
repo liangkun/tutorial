@@ -12,7 +12,7 @@ import com.typesafe.config.{ConfigFactory => AppConfigFactory}
 import org.tutorial.storm.bolt.{Printer, WordCounter, Document2Word}
 import org.tutorial.storm.spout.SocketServerSpout
 
-object Main {
+object WordCount {
   private val appConfig = AppConfigFactory.load()
 
   def main(args: Array[String]): Unit = {

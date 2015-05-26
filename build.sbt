@@ -3,15 +3,21 @@ lazy val root = (project in file(".")).settings(
   organization := "org.tutorial",
   version := "1.0",
   scalaVersion := "2.11.6",
-  scalacOptions += "-Yresolve-term-conflict:package",
+  scalacOptions ++= compilerOptions,
   libraryDependencies ++= libraries,
   resolvers ++= repositories,
-  mainClass in assembly := Some("org.tutorial.storm.Main"),
+  mainClass in assembly := Some("org.tutorial.storm.WordCount"),
   assemblyJarName in assembly := "tutorial.jar",
   assemblyMergeStrategy in assembly := {
     case x if x.endsWith("MANIFEST.MF") => MergeStrategy.discard
     case x => MergeStrategy.first
   }
+)
+
+lazy val compilerOptions = Seq(
+  "-feature",
+  "-deprecation",
+  "-Yresolve-term-conflict:package"
 )
 
 lazy val libraries = Seq(

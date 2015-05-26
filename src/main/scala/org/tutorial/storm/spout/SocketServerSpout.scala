@@ -50,7 +50,7 @@ class SocketServerSpout(appConfig: AppConfig) extends BaseRichSpout {
       Utils.sleep(50)
     } else {
       val id = nextId()
-      collector.emit(new Values(document), id)
+      collector.emit(new Values(document.toLowerCase), id)
       if (messages.put(id, document).nonEmpty) {
         logger.warn("message id collision: " + id)
       }
