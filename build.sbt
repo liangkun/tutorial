@@ -9,6 +9,7 @@ lazy val root = (project in file(".")).settings(
   mainClass in assembly := Some("org.tutorial.storm.WordCount"),
   assemblyJarName in assembly := "tutorial.jar",
   assemblyMergeStrategy in assembly := {
+    case "defaults.yaml" => MergeStrategy.discard
     case x if x.endsWith("MANIFEST.MF") => MergeStrategy.discard
     case x => MergeStrategy.first
   }

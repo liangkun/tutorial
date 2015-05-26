@@ -7,7 +7,7 @@ package org.tutorial.storm
 import backtype.storm.generated.StormTopology
 import backtype.storm.topology.TopologyBuilder
 import backtype.storm.tuple.Fields
-import backtype.storm.{LocalCluster, Config}
+import backtype.storm.{StormSubmitter, LocalCluster, Config}
 import com.typesafe.config.{ConfigFactory => AppConfigFactory}
 import org.tutorial.storm.bolt.{Printer, WordCounter, Document2Word}
 import org.tutorial.storm.spout.SocketServerSpout
@@ -16,21 +16,14 @@ object WordCount {
   private val appConfig = AppConfigFactory.load()
 
   def main(args: Array[String]): Unit = {
-    var topologyName = "wordcount"
-    if (args.length > 0) {
-      topologyName = args(0)
-    }
-
     val config = new Config()
-    config.setNumWorkers(2)
-    val cluster = new LocalCluster()
-    cluster.submitTopology("wordcount", config, topology(topologyName))
-  }
-
-  /** Get topology by name */
-  def topology(name: String): StormTopology = name match {
-    case "wordcount" => wordCountTopology
-    case _ => throw new IllegalArgumentException(s"unknown topology: $name")
+    if (args.isEmpty) {
+      val cluster = new LocalCluster()
+      cluster.submitTopology("WordCount", config, wordCountTopology)
+    } else {
+      config.setNumWorkers(2)
+      StormSubmitter.submitTopologyWithProgressBar("WordCount", config, wordCountTopology)
+    }
   }
 
   /** Simple word count topology */
