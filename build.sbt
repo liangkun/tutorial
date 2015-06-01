@@ -9,7 +9,6 @@ lazy val root = (project in file(".")).settings(
   mainClass in assembly := Some("org.tutorial.storm.WordCount"),
   assemblyJarName in assembly := "tutorial.jar",
   assemblyMergeStrategy in assembly := {
-    case "defaults.yaml" => MergeStrategy.discard
     case x if x.endsWith("MANIFEST.MF") => MergeStrategy.discard
     case x => MergeStrategy.first
   }
@@ -26,7 +25,7 @@ lazy val libraries = Seq(
   "com.typesafe.akka" %% "akka-actor" % "2.3.11",
   "org.slf4j" % "slf4j-api" % "1.7.10",
   "log4j" % "log4j" % "1.2.17",
-  "org.apache.storm" % "storm-core" % "0.9.4"
+  "org.apache.storm" % "storm-core" % "0.9.4" % "provided"
 )
 
 lazy val repositories = Seq(

@@ -24,8 +24,8 @@ class Document2Word extends IRichBolt {
     val document = tuple.getString(0)
     for (word <- document.split("\\W+")) {
       collector.emit(tuple, new Values(word))
-      collector.ack(tuple)
     }
+    collector.ack(tuple)
   }
 
   /** @see IBolt */
